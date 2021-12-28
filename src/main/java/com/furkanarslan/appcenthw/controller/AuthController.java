@@ -11,11 +11,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
-public class UserController {
+@RequestMapping("/api/auth")
+
+public class AuthController {
     private final UserService userService;
 
-    // TODO: Add endpoints about user.
-
-
+    @PostMapping("register")
+    public ResponseEntity<AppUser> createUser(@RequestBody AppUser user) {
+        return ResponseEntity.ok().body(userService.saveUser(user));
+    }
 }
