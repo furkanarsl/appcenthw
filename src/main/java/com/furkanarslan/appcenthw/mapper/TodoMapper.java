@@ -13,4 +13,5 @@ public interface TodoMapper {
     TodoDto TodoTaskToTodoDto(TodoTask todo);
     List<TodoDto> TodoTasksToTodoDtos(List<TodoTask> todos);
     void update(@MappingTarget TodoTask todo, TodoDto todoDto);
+    TodoTask TodoDtoToTodoTask(TodoDto todo);
 }
