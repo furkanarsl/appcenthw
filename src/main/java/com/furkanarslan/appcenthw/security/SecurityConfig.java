@@ -35,6 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.httpBasic().disable();
+        http.authorizeRequests().antMatchers("/api/auth/register").permitAll();
         http.authorizeRequests().anyRequest().authenticated();
         http.formLogin();
         http.formLogin().loginProcessingUrl("/api/auth/login");
