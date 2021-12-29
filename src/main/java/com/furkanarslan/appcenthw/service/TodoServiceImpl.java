@@ -26,14 +26,26 @@ public class TodoServiceImpl implements TodoService {
     }
 
     @Override
-    public List<TodoTask> getTodosForUser(AppUser user){
+    public TodoTask updateTodo(TodoTask todo) {
+        return todoRepo.save(todo);
+    }
+
+    @Override
+    public List<TodoTask> getTodosForUser(AppUser user) {
         return todoRepo.findAllByOwner(user);
     }
+
+    @Override
+    public TodoTask getTodoForUser(Long id, Long userId) {
+        return todoRepo.findByIdAndOwnerId(id, userId);
+    }
+
     @Override
     public void removeTodo(Long id) {
         TodoTask todo = this.getTodo(id);
         todoRepo.delete(todo);
     }
+
 
     @Override
     public TodoTask saveTodo(TodoTask todo) {

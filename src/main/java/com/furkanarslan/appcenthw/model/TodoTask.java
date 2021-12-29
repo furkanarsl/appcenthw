@@ -20,6 +20,8 @@ public class TodoTask {
     private String content;
     @Column(nullable = false)
     private Boolean isCompleted = false;
+    @Version
+    private Long version;
 
     @ManyToOne
     private AppUser owner;
