@@ -2,6 +2,7 @@ package com.furkanarslan.appcenthw.service;
 
 import com.furkanarslan.appcenthw.model.AppUser;
 import com.furkanarslan.appcenthw.model.Task;
+import com.furkanarslan.appcenthw.model.TodoList;
 import com.furkanarslan.appcenthw.repository.TaskRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -54,6 +55,10 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task saveTask(Task todo) {
+        TodoList todolist = todoListService.getTodoList(todo.getList().getId());
+        if(todo.getOwner() != todolist.getOwner()){
+            throw new AccessDeniedException("Unauthorized");
+        }
         return taskRepo.save(todo);
     }
 

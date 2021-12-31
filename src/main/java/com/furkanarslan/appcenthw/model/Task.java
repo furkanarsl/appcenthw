@@ -28,6 +28,6 @@ public class Task {
     @ManyToOne
     private AppUser owner;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private TodoList list;
 }

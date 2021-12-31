@@ -21,7 +21,7 @@ public class TodoList {
     @Column(nullable = false)
     private String name;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private AppUser owner;
 
     @OneToMany(mappedBy = "list", cascade = CascadeType.REMOVE)
