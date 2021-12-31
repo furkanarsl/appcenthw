@@ -1,9 +1,13 @@
 package com.furkanarslan.appcenthw.controller;
 
 import com.furkanarslan.appcenthw.dto.TaskDto;
+import com.furkanarslan.appcenthw.dto.TaskInDto;
+import com.furkanarslan.appcenthw.dto.TodoListTaskInDto;
 import com.furkanarslan.appcenthw.mapper.TaskMapper;
+import com.furkanarslan.appcenthw.mapper.TodoListMapper;
 import com.furkanarslan.appcenthw.model.AppUser;
 import com.furkanarslan.appcenthw.model.Task;
+import com.furkanarslan.appcenthw.model.TodoList;
 import com.furkanarslan.appcenthw.service.TaskService;
 import com.furkanarslan.appcenthw.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,6 +32,7 @@ public class TaskController {
     private final TaskService taskService;
     private final UserService userService;
     private final TaskMapper taskMapper;
+    private final TodoListMapper todoListMapper;
 
     @Operation(summary = "Get all tasks", description = "Get all tasks for the currently logged in user.")
     @ApiResponse(responseCode = "200", description = "All tasks for the user.")
@@ -54,9 +59,9 @@ public class TaskController {
     @Operation(summary = "Create task.", description = "Create a new task and save it for the currently logged in user.")
     @ApiResponse(responseCode = "200", description = "Returns the newly created task object.")
     @PostMapping("")
-    public ResponseEntity<TaskDto> createTask(@RequestBody TaskDto task, Authentication authentication) {
+    public ResponseEntity<TaskDto> createTask(@RequestBody TaskInDto task, Authentication authentication) {
         AppUser owner = userService.getUser(authentication.getName());
-        Task newTask = taskMapper.TaskDtoToTask(task);
+        Task newTask = taskMapper.TaskInDtoToTask(task);
         newTask.setOwner(owner);
         taskService.saveTask(newTask);
         return new ResponseEntity<>(taskMapper.TaskToTaskDto(newTask), HttpStatus.CREATED);

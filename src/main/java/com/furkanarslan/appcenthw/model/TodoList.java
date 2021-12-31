@@ -6,28 +6,24 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.util.List;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Task {
+public class TodoList {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
     @Column(nullable = false)
-    private String content;
-    @Column(nullable = false)
-    private Boolean isCompleted = false;
-    private Date dueDate;
-    @Version
-    private Long version;
+    private String name;
 
     @ManyToOne
     private AppUser owner;
 
-    @ManyToOne
-    private TodoList list;
+    @OneToMany(mappedBy = "list", cascade = CascadeType.REMOVE)
+    private List<Task> tasks;
 }
