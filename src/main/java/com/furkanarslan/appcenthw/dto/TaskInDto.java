@@ -5,7 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Data
@@ -16,7 +21,10 @@ public class TaskInDto {
     private String content;
     @Schema(defaultValue = "false")
     private Boolean isCompleted;
+
+    @NotNull
     private Date dueDate;
 
+    @NotNull(message = "Task requires a todo list id")
     private TodoListTaskInDto list;
 }

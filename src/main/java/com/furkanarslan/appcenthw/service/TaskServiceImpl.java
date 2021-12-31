@@ -4,8 +4,11 @@ import com.furkanarslan.appcenthw.model.AppUser;
 import com.furkanarslan.appcenthw.model.Task;
 import com.furkanarslan.appcenthw.repository.TaskRepo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -14,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TaskServiceImpl implements TaskService {
     private final TaskRepo taskRepo;
+    private final TodoListService todoListService;
 
     @Override
     public List<Task> getTasks() {
@@ -36,8 +40,10 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task getTaskForUser(Long id, Long userId) {
-        return taskRepo.findByIdAndOwnerId(id, userId);
+    public Task getTaskForUser(Long id, AppUser user) {
+        Task task = taskRepo.findByIdAndOwnerId(id, user.getId());
+        checkTaskOwner(task, user);
+        return task;
     }
 
     @Override
@@ -46,9 +52,16 @@ public class TaskServiceImpl implements TaskService {
         taskRepo.delete(todo);
     }
 
-
     @Override
     public Task saveTask(Task todo) {
         return taskRepo.save(todo);
+    }
+
+    public void checkTaskOwner(Task task, AppUser owner) throws AccessDeniedException, ResponseStatusException {
+        if (task != null && !task.getOwner().equals(owner)) {
+            throw new AccessDeniedException("Unauthorized");
+        } else if (task == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found");
+        }
     }
 }

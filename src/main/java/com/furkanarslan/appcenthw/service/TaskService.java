@@ -14,7 +14,7 @@ public interface TaskService {
 
     public List<Task> getTasksForUser(AppUser user);
 
-    public Task getTaskForUser(Long id, Long userId);
+    public Task getTaskForUser(Long id, AppUser user);
 
     public Task updateTask(Task todo);
 

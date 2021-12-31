@@ -2,12 +2,10 @@ package com.furkanarslan.appcenthw.controller;
 
 import com.furkanarslan.appcenthw.dto.TaskDto;
 import com.furkanarslan.appcenthw.dto.TaskInDto;
-import com.furkanarslan.appcenthw.dto.TodoListTaskInDto;
 import com.furkanarslan.appcenthw.mapper.TaskMapper;
 import com.furkanarslan.appcenthw.mapper.TodoListMapper;
 import com.furkanarslan.appcenthw.model.AppUser;
 import com.furkanarslan.appcenthw.model.Task;
-import com.furkanarslan.appcenthw.model.TodoList;
 import com.furkanarslan.appcenthw.service.TaskService;
 import com.furkanarslan.appcenthw.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,6 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -50,8 +49,7 @@ public class TaskController {
     @GetMapping("/{id}")
     public ResponseEntity<TaskDto> getTask(@PathVariable Long id, Authentication authentication) throws AccessDeniedException, ResponseStatusException {
         AppUser owner = userService.getUser(authentication.getName());
-        Task task = taskService.getTask(id);
-        checkTaskOwner(task, owner);
+        Task task = taskService.getTaskForUser(id, owner);
         TaskDto taskDto = taskMapper.TaskToTaskDto(task);
         return new ResponseEntity<>(taskDto, HttpStatus.OK);
     }
@@ -59,7 +57,7 @@ public class TaskController {
     @Operation(summary = "Create task.", description = "Create a new task and save it for the currently logged in user.")
     @ApiResponse(responseCode = "200", description = "Returns the newly created task object.")
     @PostMapping("")
-    public ResponseEntity<TaskDto> createTask(@RequestBody TaskInDto task, Authentication authentication) {
+    public ResponseEntity<TaskDto> createTask(@Valid @RequestBody TaskInDto task, Authentication authentication) {
         AppUser owner = userService.getUser(authentication.getName());
         Task newTask = taskMapper.TaskInDtoToTask(task);
         newTask.setOwner(owner);
@@ -73,8 +71,7 @@ public class TaskController {
     public ResponseEntity<TaskDto> updateTask(@PathVariable Long id, Authentication authentication, @RequestBody TaskDto task) {
         AppUser owner = userService.getUser(authentication.getName());
         task.setId(id);
-        Task currentTask = taskService.getTask(id);
-        checkTaskOwner(currentTask, owner);
+        Task currentTask = taskService.getTaskForUser(id, owner);
         taskMapper.update(currentTask, task);
         return new ResponseEntity<>(taskMapper.TaskToTaskDto(currentTask), HttpStatus.OK);
     }
@@ -84,17 +81,8 @@ public class TaskController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> removeTask(@PathVariable Long id, Authentication authentication) {
         AppUser owner = userService.getUser(authentication.getName());
-        Task task = taskService.getTask(id);
-        checkTaskOwner(task, owner);
+        Task task = taskService.getTaskForUser(id, owner);
         taskService.removeTask(id);
         return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-    }
-
-    private void checkTaskOwner(Task task, AppUser owner) throws AccessDeniedException, ResponseStatusException {
-        if (task != null && !task.getOwner().equals(owner)) {
-            throw new AccessDeniedException("Unauthorized");
-        } else if (task == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found");
-        }
     }
 }
