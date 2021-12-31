@@ -16,7 +16,7 @@ public interface TaskMapper {
     List<TaskDto> TasksToTaskDtos(List<Task> tasks);
 
     void update(@MappingTarget Task task, TaskDto taskDto);
-    
+
     Task TaskDtoToTask(TaskDto task);
 
     @Mapping(source = "list", target = "list")

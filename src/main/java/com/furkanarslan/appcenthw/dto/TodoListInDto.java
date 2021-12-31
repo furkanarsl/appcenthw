@@ -1,6 +1,5 @@
 package com.furkanarslan.appcenthw.dto;
 
-import com.furkanarslan.appcenthw.model.AppUser;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

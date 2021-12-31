@@ -49,7 +49,7 @@ public class TodoListServiceImpl implements TodoListService {
         todoListRepo.delete(todoList);
     }
 
-    private void checkTodoListOwner(TodoList todoList, AppUser owner){
+    private void checkTodoListOwner(TodoList todoList, AppUser owner) {
         if (todoList != null && !todoList.getOwner().equals(owner)) {
             throw new AccessDeniedException("Unauthorized");
         } else if (todoList == null) {
