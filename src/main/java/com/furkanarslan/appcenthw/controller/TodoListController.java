@@ -48,7 +48,8 @@ public class TodoListController {
     @GetMapping("/{id}")
     public ResponseEntity<TodoListOutDetailDto> getTodoListDetail(@PathVariable Long id, Authentication authentication) {
         AppUser owner = userService.getUser(authentication.getName());
-        return new ResponseEntity<>(todoListMapper.TodoListToTodoListOutDetailDto(todoListService.getTodoList(id)), HttpStatus.OK);
+        TodoList todoList = todoListService.getTodoListForUser(id, owner);
+        return new ResponseEntity<>(todoListMapper.TodoListToTodoListOutDetailDto(todoList), HttpStatus.OK);
     }
 
     @Operation(summary = "Create a todo list.", description = "Create a new todo list and save it for the currently logged in user")
@@ -66,7 +67,7 @@ public class TodoListController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> removeTodoList(@PathVariable Long id, Authentication authentication) {
         AppUser owner = userService.getUser(authentication.getName());
-        TodoList todoList = todoListService.getTodoList(id);
+        TodoList todoList = todoListService.getTodoListForUser(id, owner);
         todoListService.removeTodoList(todoList);
         return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
     }
@@ -74,10 +75,9 @@ public class TodoListController {
     @Operation(summary = "Update a todo list.", description = "Update details of a todo list and save it for the currently logged in user")
     @PutMapping("/{id}")
     public ResponseEntity<TodoListOutDto> updateTodoList(@PathVariable Long id, @RequestBody TodoListInDto todoListInDto, Authentication authentication) {
-        // BUG: Does not properly update the fields.
         AppUser owner = userService.getUser(authentication.getName());
         todoListInDto.setId(id);
-        TodoList currentTodoList = todoListService.getTodoList(id);
+        TodoList currentTodoList = todoListService.getTodoListForUser(id, owner);
         todoListMapper.update(currentTodoList, todoListInDto);
         return new ResponseEntity<>(todoListMapper.TodoListToTodoListOutDto(currentTodoList), HttpStatus.OK);
     }

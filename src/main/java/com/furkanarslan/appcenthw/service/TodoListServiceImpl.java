@@ -4,7 +4,10 @@ import com.furkanarslan.appcenthw.model.AppUser;
 import com.furkanarslan.appcenthw.model.TodoList;
 import com.furkanarslan.appcenthw.repository.TodoListRepo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -34,7 +37,23 @@ public class TodoListServiceImpl implements TodoListService {
     }
 
     @Override
+    public TodoList getTodoListForUser(Long id, AppUser owner) {
+        TodoList todoList = this.getTodoList(id);
+        checkTodoListOwner(todoList, owner);
+        return todoList;
+    }
+
+
+    @Override
     public void removeTodoList(TodoList todoList) {
         todoListRepo.delete(todoList);
+    }
+
+    private void checkTodoListOwner(TodoList todoList, AppUser owner){
+        if (todoList != null && !todoList.getOwner().equals(owner)) {
+            throw new AccessDeniedException("Unauthorized");
+        } else if (todoList == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Todo list not found");
+        }
     }
 }

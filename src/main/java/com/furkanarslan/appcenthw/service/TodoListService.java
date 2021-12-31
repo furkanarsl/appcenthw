@@ -14,6 +14,8 @@ public interface TodoListService {
 
     public List<TodoList> getTodoListsForUser(AppUser owner);
 
+    public TodoList getTodoListForUser(Long id, AppUser owner);
+
     public void removeTodoList(TodoList todoList);
 
 }
