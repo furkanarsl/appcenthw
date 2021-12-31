@@ -42,7 +42,10 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task getTaskForUser(Long id, AppUser user) {
-        Task task = taskRepo.findByIdAndOwnerId(id, user.getId());
+        if (taskRepo.findById(id).isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Todo does not exists.");
+        }
+        Task task = taskRepo.getById(id);
         checkTaskOwner(task, user);
         return task;
     }

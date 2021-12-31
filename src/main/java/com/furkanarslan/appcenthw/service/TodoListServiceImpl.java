@@ -23,6 +23,9 @@ public class TodoListServiceImpl implements TodoListService {
 
     @Override
     public TodoList getTodoList(Long id) {
+        if (todoListRepo.findById(id).isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Todo list does not exists.");
+        }
         return todoListRepo.getById(id);
     }
 
