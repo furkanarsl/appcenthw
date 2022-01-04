@@ -24,7 +24,7 @@ public class TaskRepositoryTest {
     public void testSaveTask() {
         AppUser user = new AppUser("Name", "test", "test");
         testEntityManager.persist(user);
-        TodoList todoList = new TodoList(null, "todolistname", user, null);
+        TodoList todoList = new TodoList(null, "todolistname", user, null, 1L);
         testEntityManager.persist(todoList);
         Task task = new Task(null, "todo task", false, new Date(), 0L, user, todoList);
         testEntityManager.persistAndFlush(task);
@@ -35,7 +35,7 @@ public class TaskRepositoryTest {
     public void TestTaskHasCorrectOwner() {
         AppUser user = new AppUser("Name", "test", "test");
         testEntityManager.persist(user);
-        TodoList todoList = new TodoList(null, "todolistname", user, null);
+        TodoList todoList = new TodoList(null, "todolistname", user, null, 1L);
         testEntityManager.persist(todoList);
         Task task = new Task(null, "todo task", false, new Date(), 0L, user, todoList);
         testEntityManager.persistAndFlush(task);

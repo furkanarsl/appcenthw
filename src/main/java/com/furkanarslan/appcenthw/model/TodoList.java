@@ -26,4 +26,8 @@ public class TodoList {
 
     @OneToMany(mappedBy = "list", cascade = CascadeType.REMOVE)
     private List<Task> tasks;
+
+    @Version
+    private Long version;
+
 }

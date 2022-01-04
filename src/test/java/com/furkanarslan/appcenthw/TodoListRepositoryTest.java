@@ -22,28 +22,28 @@ public class TodoListRepositoryTest {
     private TodoListRepo todoListRepo;
 
     @Test
-    private void testTodoListCreate(){
+    private void testTodoListCreate() {
         AppUser user = new AppUser("Name", "test", "test");
         testEntityManager.persist(user);
-        TodoList todoList = new TodoList(null, "todolistname", user, null);
+        TodoList todoList = new TodoList(null, "todolistname", user, null, 1L);
         testEntityManager.persist(todoList);
         assertThat(todoList.getId()).isNotNull();
     }
 
     @Test
-    private void testTodoListOwnerValid(){
+    private void testTodoListOwnerValid() {
         AppUser user = new AppUser("Name", "test", "test");
         testEntityManager.persist(user);
-        TodoList todoList = new TodoList(null, "todolistname", user, null);
+        TodoList todoList = new TodoList(null, "todolistname", user, null, 1L);
         testEntityManager.persist(todoList);
         assert (todoList.getOwner() == user);
     }
 
     @Test
-    private void testTodoListNameCorrect(){
+    private void testTodoListNameCorrect() {
         AppUser user = new AppUser("Name", "test", "test");
         testEntityManager.persist(user);
-        TodoList todoList = new TodoList(null, "todolistname", user, null);
+        TodoList todoList = new TodoList(null, "todolistname", user, null, 1L);
         testEntityManager.persist(todoList);
         assert (todoList.getName().equals("todolistname"));
     }
